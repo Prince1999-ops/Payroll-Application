@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Edit Employee</h2>
+    <form action="{{ url_for('edit_employee', employee_id=employee[0]) }}" method="POST">
+        <input type="number" name="emp_id" value="{{ employee[1] }}" required><br>
+        <input type="text" name="name" value="{{ employee[2] }}" required><br>
+        <input type="number" name="basic_salary" value="{{ employee[3] }}" required><br>
+        <input type="number" name="allowances" value="{{ employee[4] }}" required><br>
+        <input type="number" name="tax_rate" value="{{ employee[5] }}" required><br>
+        <input type="number" name="overtime_hours" value="{{ employee[6] }}" required><br>
+        <input type="number" name="hourly_rate" value="{{ employee[7] }}" required><br>
+        <input type="number" name="unpaid_leaves" value="{{ employee[8] }}" required><br>
+        <input type="number" name="bonus" value="{{ employee[9] }}" required><br>
+        <button type="submit">Update Employee</button>
+    </form>
+
+    <a href="{{ url_for('view_records') }}">View Employee Records</a><br>
+    <a href="{{ url_for('export_excel') }}">Export Payroll to Excel</a><br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <br>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+</body>
+</html>

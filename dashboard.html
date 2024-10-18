@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle">Toggle Dark Mode</button>
+
+    <!-- Summary Metrics Section -->
+    <div class="summary-metrics">
+        <div>Total Employees: <strong>{{ total_employees }}</strong></div>
+        <div>Total Salary Paid: <strong>{{ total_salary }}</strong></div>
+        <div>Average Salary: <strong>{{ avg_salary }}</strong></div>
+        <div>Total Bonus: <strong>{{ total_bonus }}</strong></div>
+    </div>
+
+    <!-- Filters Section -->
+    <div>
+        <label for="salaryFilter">Filter by Salary Range:</label>
+        <select id="salaryFilter">
+            <option value="all">All</option>
+            <option value="low">Low (0-1000)</option>
+            <option value="medium">Medium (1000-5000)</option>
+            <option value="high">High (5000+)</option>
+        </select>
+    </div>
+
+    <!-- Pie Chart Section -->
+    <div style="width: 400px; height: 300px;">
+        <canvas id="salaryPieChart"></canvas>
+    </div>
+
+    <!-- Line Chart Section -->
+    <div style="width: 400px; height: 300px;">
+        <canvas id="salaryLineChart"></canvas>
+    </div>
+
+    <!-- Time-Series Line Chart -->
+    <div style="width: 500px; height: 300px;">
+        <canvas id="timeSeriesChart"></canvas>
+    </div>
+
+    <!-- Employee Records Table -->
+    <table id="employeeTable" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Basic Salary</th>
+                <th>Allowances</th>
+                <th>Bonus</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record[0] }}</td>
+                <td>{{ record[1] }}</td>
+                <td>{{ record[2] }}</td>
+                <td>{{ record[3] }}</td>
+                <td>{{ record[4] }}</td>
+                <td>{{ record[9] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Dark Mode Toggle
+        const toggleButton = document.getElementById('darkModeToggle');
+        toggleButton.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        // Pie Chart Data
+        const payrollData = {
+            labels: ['Basic Salary', 'Allowances', 'Bonuses'],
+            datasets: [{
+                label: 'Salary Breakdown',
+                data: [{{ total_salary }}, {{ total_allowances }}, {{ total_bonus }}],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            }]
+        };
+
+        // Pie Chart
+        const pieChart = new Chart(document.getElementById('salaryPieChart'), {
+            type: 'pie',
+            data: payrollData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+
+        // Line Chart Data (Similar to Pie Chart)
+        const lineChartData = {
+            labels: ['Basic Salary', 'Allowances', 'Bonuses'],
+            datasets: [{
+                label: 'Salary Breakdown',
+                data: [{{ total_salary }}, {{ total_allowances }}, {{ total_bonus }}],
+                borderColor: '#4CAF50',
+                fill: false,
+                tension: 0.1
+            }]
+        };
+
+        // Line Chart
+        const lineChart = new Chart(document.getElementById('salaryLineChart'), {
+            type: 'line',
+            data: lineChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Time Series Chart Data
+        const timeSeriesData = {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Total Salary Over Time',
+                data: [2000, 3000, 2500, 3200, 3100],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                fill: true,
+                tension: 0.1
+            }]
+        };
+
+        // Time Series Line Chart
+        const timeChart = new Chart(document.getElementById('timeSeriesChart'), {
+            type: 'line',
+            data: timeSeriesData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Employee Table (With DataTables.js)
+        $(document).ready(function() {
+            $('#employeeTable').DataTable();
+        });
+
+        // Filter Logic for Salary Range (Example for salary filter)
+        document.getElementById('salaryFilter').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue === 'low') {
+                // Logic for filtering low salary employees
+                alert("Low Salary Filter Applied");
+            } else if (selectedValue === 'medium') {
+                // Logic for filtering medium salary employees
+                alert("Medium Salary Filter Applied");
+            } else if (selectedValue === 'high') {
+                // Logic for filtering high salary employees
+                alert("High Salary Filter Applied");
+            } else {
+                // Logic for displaying all employees
+                alert("Showing All Employees");
+            }
+        });
+    </script>
+
+</body>
+</html>
